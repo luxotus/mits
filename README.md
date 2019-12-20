@@ -1,1 +1,1 @@
-# mits
+# Multiple Input Text Summarizer 
