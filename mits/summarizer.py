@@ -13,7 +13,7 @@ def extract_word_frequencies(text, with_stem=True):
   ps = PorterStemmer()
   word_frequencies = {}
 
-  for word in word_tokenize(text):
+  for word in word_tokenize(text.lower()):
     if with_stem:
       word = ps.stem(word)
 
