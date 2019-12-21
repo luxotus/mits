@@ -1,1 +1,2 @@
-# Multiple Input Text Summarizer 
+# Multiple Input Text Summarizer
+Mits was created for bloggers that researching a new topic and want to quickly get a better understanding of it. User just has to provide a list of urls and run the script. If you have any questions, let me know.
