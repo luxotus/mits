@@ -59,11 +59,17 @@ def text_from_soup(source_data):
 
   return source_text
 
-def get_summary(source):
-  scraped_data = urllib.request.urlopen(source)
-  source_data = bs.BeautifulSoup(scraped_data.read(),'lxml')
-  source_text = text_from_soup(source_data)
+def get_source_text(sources):
+  source_text = ''
 
+  for source in sources:
+    scraped_data = urllib.request.urlopen(source)
+    source_data = bs.BeautifulSoup(scraped_data.read(),'lxml')
+    source_text += text_from_soup(source_data)
+
+  return source_text
+
+def get_summary(source_text):
   # Removing square brackets and extra spaces then special characters and digits
   source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', source_text))
   cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
@@ -78,9 +84,21 @@ def get_summary(source):
   return summary
 
 def get_summaries(sources):
-  summaries = []
+  summaries = {
+    'discrete': {},
+    'joined': get_summary(get_source_text(sources))
+  }
 
   for source in sources:
-    summaries.append(get_summary(source))
+    summaries['discrete'][source] = get_summary(get_source_text([source]))
 
   return summaries
+
+def print_summaries(summaries):
+  for key in summaries['discrete']:
+    print(key)
+    print(summaries['discrete'][key])
+    print('\n')
+
+  print('-'*100)
+  print(summaries['joined'])
