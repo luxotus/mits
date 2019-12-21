@@ -13,6 +13,7 @@ def get_word_frequencies(text):
 
   for word in word_tokenize(text):
     word = ps.stem(word)
+
     if word not in stop_words:
       if word not in word_frequencies.keys():
         word_frequencies[word] = 1
@@ -34,6 +35,7 @@ def score(sentence_list, word_frequencies):
   for sent in sentence_list:
     for word in word_tokenize(sent.lower()):
       word = ps.stem(word)
+
       if word in word_frequencies.keys() and len(sent.split(' ')) < max_word_count:
         if sent in scores.keys():
           scores[sent] += word_frequencies[word]
@@ -42,24 +44,31 @@ def score(sentence_list, word_frequencies):
 
   return scores
 
-def get_summary(sources):
-  scraped_data = urllib.request.urlopen(sources[0])
-
-  source = bs.BeautifulSoup(scraped_data.read(),'lxml')
-
-  p_elements = source.find_all('p')
-
+def text_from_soup(source_data):
+  tags = [
+    'p',
+    'h1',
+  ]
   source_text = ""
 
-  for p in p_elements:
-    source_text += p.text
+  for t in tags:
+    elements = source_data.find_all(t)
+
+    for el in elements:
+      source_text += el.text
+
+  return source_text
+
+def get_summary(source):
+  scraped_data = urllib.request.urlopen(source)
+  source_data = bs.BeautifulSoup(scraped_data.read(),'lxml')
+  source_text = text_from_soup(source_data)
 
   # Removing square brackets and extra spaces then special characters and digits
   source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', source_text))
   cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
 
   sentence_list = sent_tokenize(source_text)
-
   word_frequencies = get_word_frequencies(cleaned_text)
   sentence_scores = score(sentence_list, word_frequencies)
   sentence_count = 7
@@ -67,3 +76,11 @@ def get_summary(sources):
   summary = ' '.join(nlargest(sentence_count, sentence_scores, key=sentence_scores.get))
 
   return summary
+
+def get_summaries(sources):
+  summaries = []
+
+  for source in sources:
+    summaries.append(get_summary(source))
+
+  return summaries
