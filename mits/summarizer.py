@@ -105,22 +105,21 @@ def get_summary(source_text, sentence_count=7):
   sentence_list = sent_tokenize(source_text)
   word_frequencies = get_word_frequencies(cleaned_text)
   sentence_scores = score(sentence_list, word_frequencies)
-  sentence_count = 7
 
   summary = ' '.join(nlargest(sentence_count, sentence_scores, key=sentence_scores.get))
 
   return summary
 
-def get_summaries(sources):
+def get_summaries(sources, sentence_count_per_source=7):
   ''' Gets all summaries from the list of URL sources '''
 
   summaries = {
     'discrete': {},
-    'joined': get_summary(get_source_text(sources))
+    'joined': get_summary(get_source_text(sources), sentence_count_per_source)
   }
 
   for source in sources:
-    summaries['discrete'][source] = get_summary(get_source_text([source]))
+    summaries['discrete'][source] = get_summary(get_source_text([source]), sentence_count_per_source)
 
   return summaries
 
@@ -137,11 +136,11 @@ def get_keywords(sources, keywords_count_per_source=5):
 
   return keywords
 
-def get_summaries_keywords(sources, keywords_count_per_source=5):
+def get_summaries_keywords(sources, keywords_count_per_source=5, sentence_count_per_source=7):
   ''' Gets all the summaries and keywords from the list of URL sources '''
 
   results = {
-    'summaries': get_summaries(sources),
+    'summaries': get_summaries(sources, sentence_count_per_source),
     'keywords': get_keywords(sources, keywords_count_per_source),
   }
 
