@@ -25,15 +25,14 @@ def extract_word_frequencies(text, with_stem=True):
 
   return word_frequencies
 
-def extract_keywords(text):
+def extract_keywords(text, keywords_count=5):
   ''' Grabs the top # of keywords of a body of text '''
 
-  top_keywords_count = 7
   source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', text))
   cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
   word_frequencies = extract_word_frequencies(cleaned_text, False)
 
-  keywords = nlargest(top_keywords_count, word_frequencies, key=word_frequencies.get)
+  keywords = nlargest(keywords_count, word_frequencies, key=word_frequencies.get)
 
   return keywords
 
@@ -96,7 +95,7 @@ def get_source_text(sources):
 
   return source_text
 
-def get_summary(source_text):
+def get_summary(source_text, sentence_count=7):
   ''' Summarizes a body of text '''
 
   # Removing square brackets and extra spaces then special characters and digits
@@ -125,25 +124,25 @@ def get_summaries(sources):
 
   return summaries
 
-def get_keywords(sources):
+def get_keywords(sources, keywords_count_per_source=5):
   ''' Gets all keywords from the list of URL sources '''
 
   keywords = {
     'discrete': {},
-    'joined': extract_keywords(get_source_text(sources))
+    'joined': extract_keywords(get_source_text(sources), keywords_count_per_source)
   }
 
   for source in sources:
-    keywords['discrete'][source] = extract_keywords(get_source_text([source]))
+    keywords['discrete'][source] = extract_keywords(get_source_text([source]), keywords_count_per_source)
 
   return keywords
 
-def get_summaries_keywords(sources):
+def get_summaries_keywords(sources, keywords_count_per_source=5):
   ''' Gets all the summaries and keywords from the list of URL sources '''
 
   results = {
     'summaries': get_summaries(sources),
-    'keywords': get_keywords(sources),
+    'keywords': get_keywords(sources, keywords_count_per_source),
   }
 
   return results
