@@ -120,6 +120,14 @@ def get_keywords(sources):
 
   return keywords
 
+def get_summaries_keywords(sources):
+  results = {
+    'summaries': get_summaries(sources),
+    'keywords': get_keywords(sources),
+  }
+
+  return results
+
 def print_summaries(summaries):
   for key in summaries['discrete']:
     print(key)
@@ -130,11 +138,15 @@ def print_summaries(summaries):
   print(summaries['joined'])
 
 def print_keywords(keywords):
-  print(keywords)
-  # for key in keywords['discrete']:
-  #   print(key)
-  #   print(keywords['discrete'][key])
-  #   print('\n')
+  for key in keywords['discrete']:
+    print(key)
+    print(keywords['discrete'][key])
+    print('\n')
 
-  # print('-------- Joined --------')
-  # print(keywords['joined'])
+  print('-------- Joined --------')
+  print(keywords['joined'])
+
+def print_summaries_keywords(sk):
+  print_keywords(sk['keywords'])
+  print('\n')
+  print_summaries(sk['summaries'])
