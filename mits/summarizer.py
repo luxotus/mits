@@ -6,13 +6,14 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
 
-def get_word_frequencies(text):
+def extract_word_frequencies(text, with_stem=True):
   stop_words = stopwords.words('english')
   ps = PorterStemmer()
   word_frequencies = {}
 
   for word in word_tokenize(text):
-    word = ps.stem(word)
+    if with_stem:
+      word = ps.stem(word)
 
     if word not in stop_words:
       if word not in word_frequencies.keys():
@@ -20,6 +21,20 @@ def get_word_frequencies(text):
       else:
         word_frequencies[word] += 1
 
+  return word_frequencies
+
+def extract_keywords(text):
+  top_keywords_count = 7
+  source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', text))
+  cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
+  word_frequencies = extract_word_frequencies(cleaned_text, False)
+
+  keywords = nlargest(top_keywords_count, word_frequencies, key=word_frequencies.get)
+
+  return keywords
+
+def get_word_frequencies(text):
+  word_frequencies = extract_word_frequencies(text)
   maximum_frequency = max(word_frequencies.values())
 
   for word in word_frequencies.keys():
@@ -94,11 +109,32 @@ def get_summaries(sources):
 
   return summaries
 
+def get_keywords(sources):
+  keywords = {
+    'discrete': {},
+    'joined': extract_keywords(get_source_text(sources))
+  }
+
+  for source in sources:
+    keywords['discrete'][source] = extract_keywords(get_source_text([source]))
+
+  return keywords
+
 def print_summaries(summaries):
   for key in summaries['discrete']:
     print(key)
     print(summaries['discrete'][key])
     print('\n')
 
-  print('-'*100)
+  print('-------- Joined --------')
   print(summaries['joined'])
+
+def print_keywords(keywords):
+  print(keywords)
+  # for key in keywords['discrete']:
+  #   print(key)
+  #   print(keywords['discrete'][key])
+  #   print('\n')
+
+  # print('-------- Joined --------')
+  # print(keywords['joined'])
