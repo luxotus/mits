@@ -7,6 +7,8 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
 
 def extract_word_frequencies(text, with_stem=True):
+  ''' Measures how often words appear in a given text '''
+
   stop_words = stopwords.words('english')
   ps = PorterStemmer()
   word_frequencies = {}
@@ -24,6 +26,8 @@ def extract_word_frequencies(text, with_stem=True):
   return word_frequencies
 
 def extract_keywords(text):
+  ''' Grabs the top # of keywords of a body of text '''
+
   top_keywords_count = 7
   source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', text))
   cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
@@ -34,6 +38,8 @@ def extract_keywords(text):
   return keywords
 
 def get_word_frequencies(text):
+  ''' Measures frequency of a word based on the word that occurs most frequently '''
+
   word_frequencies = extract_word_frequencies(text)
   maximum_frequency = max(word_frequencies.values())
 
@@ -43,6 +49,8 @@ def get_word_frequencies(text):
   return word_frequencies
 
 def score(sentence_list, word_frequencies):
+  ''' Scores sentences based on word occurrences '''
+
   scores = {}
   max_word_count = 30 # per sentence
   ps = PorterStemmer()
@@ -60,6 +68,8 @@ def score(sentence_list, word_frequencies):
   return scores
 
 def text_from_soup(source_data):
+  ''' Extracts relevant text from beautifulSoup '''
+
   tags = [
     'p',
     'h1',
@@ -75,6 +85,8 @@ def text_from_soup(source_data):
   return source_text
 
 def get_source_text(sources):
+  ''' Turns article links into a single body of text '''
+
   source_text = ''
 
   for source in sources:
@@ -85,6 +97,8 @@ def get_source_text(sources):
   return source_text
 
 def get_summary(source_text):
+  ''' Summarizes a body of text '''
+
   # Removing square brackets and extra spaces then special characters and digits
   source_text = sub(r'\s+', ' ', sub(r'\[[0-9]*\]', ' ', source_text))
   cleaned_text = sub(r'\s+', ' ', sub('[^a-zA-Z]', ' ', source_text))
@@ -99,6 +113,8 @@ def get_summary(source_text):
   return summary
 
 def get_summaries(sources):
+  ''' Gets all summaries from the list of URL sources '''
+
   summaries = {
     'discrete': {},
     'joined': get_summary(get_source_text(sources))
@@ -110,6 +126,8 @@ def get_summaries(sources):
   return summaries
 
 def get_keywords(sources):
+  ''' Gets all keywords from the list of URL sources '''
+
   keywords = {
     'discrete': {},
     'joined': extract_keywords(get_source_text(sources))
@@ -121,6 +139,8 @@ def get_keywords(sources):
   return keywords
 
 def get_summaries_keywords(sources):
+  ''' Gets all the summaries and keywords from the list of URL sources '''
+
   results = {
     'summaries': get_summaries(sources),
     'keywords': get_keywords(sources),
@@ -129,6 +149,8 @@ def get_summaries_keywords(sources):
   return results
 
 def print_summaries(summaries):
+  ''' Prints all summaries '''
+
   for key in summaries['discrete']:
     print(key)
     print(summaries['discrete'][key])
@@ -138,6 +160,8 @@ def print_summaries(summaries):
   print(summaries['joined'])
 
 def print_keywords(keywords):
+  ''' Prints all Keywords '''
+
   for key in keywords['discrete']:
     print(key)
     print(keywords['discrete'][key])
@@ -147,6 +171,8 @@ def print_keywords(keywords):
   print(keywords['joined'])
 
 def print_summaries_keywords(sk):
+  ''' Prints all summaries and keywords '''
+
   print_keywords(sk['keywords'])
   print('\n')
   print_summaries(sk['summaries'])
