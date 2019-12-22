@@ -16,3 +16,6 @@ summarizer.get_summaries(sources) # returns summaries
 summarizer.get_keywords(sources) # returns keywords
 summarizer.get_summaries_keywords(sources) # returns both summaries and keywords
 ```
+
+## License
+[MIT](https://github.com/luxotus/mits/blob/master/LICENSE)
