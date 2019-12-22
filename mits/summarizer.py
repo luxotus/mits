@@ -51,7 +51,7 @@ def score(sentence_list, word_frequencies):
   ''' Scores sentences based on word occurrences '''
 
   scores = {}
-  max_word_count = 30 # per sentence
+  max_word_count = 20 # per sentence
   ps = PorterStemmer()
 
   for sent in sentence_list:
