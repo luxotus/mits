@@ -12,9 +12,9 @@ example_links = [
   'https://qz.com/1310792/the-secret-to-a-meaningful-life-is-simpler-than-you-think/',
 ]
 
-summarizer.get_summaries(sources) # returns summaries
-summarizer.get_keywords(sources) # returns keywords
-summarizer.get_summaries_keywords(sources) # returns both summaries and keywords
+summarizer.get_summaries(example_links) # returns summaries
+summarizer.get_keywords(example_links) # returns keywords
+summarizer.get_summaries_keywords(example_links) # returns both summaries and keywords
 ```
 
 ## License
